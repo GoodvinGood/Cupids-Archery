@@ -24,6 +24,9 @@ heart_width, heart_height = 100, 87
 # Устанавливаем фон
 BACKGROUND_COLOR = (255, 228, 196)  # Нежный кремовый цвет
 
+# Загрузка звука выстрела
+shoot_sound = pygame.mixer.Sound('sounds/shoot_sound.wav')  # замените на путь к вашему файлу звука
+
 # Создаем переменные для счета
 score_hits = 0
 score_misses = 0
@@ -59,6 +62,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
+            shoot_sound.play()  # воспроизведение звука выстрела
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if heart_x < mouse_x < heart_x + heart_width and heart_y < mouse_y < heart_y + heart_height:
                 score_hits += 1
@@ -69,7 +73,7 @@ while running:
 
     # Перемещение сердечка каждые 1.5 секунды
     current_time = time.time()
-    if current_time - last_move_time > 5.5:
+    if current_time - last_move_time > 1.5:
         heart_x = random.randint(0, SCREEN_WIDTH - heart_width)
         heart_y = random.randint(0, SCREEN_HEIGHT - heart_height)
         last_move_time = current_time

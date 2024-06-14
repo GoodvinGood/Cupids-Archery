@@ -5,10 +5,13 @@ import time
 # Инициализация Pygame
 pygame.init()
 
-# Задаем размеры экрана
+# Задаем размеры экрана и игрового поля
+INFO_WIDTH = 200  # Ширина дополнительной зоны для опций и информации
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+WINDOW_WIDTH = SCREEN_WIDTH + INFO_WIDTH
+
+screen = pygame.display.set_mode((WINDOW_WIDTH, SCREEN_HEIGHT))
 
 # Задаем название окна
 pygame.display.set_caption("Cupid's Archery")
@@ -33,7 +36,7 @@ score_misses = 0
 last_move_time = time.time()
 
 # Устанавливаем начальные координаты сердечка
-heart_x = random.randint(0, SCREEN_WIDTH - heart_width)
+heart_x = random.randint(INFO_WIDTH, SCREEN_WIDTH + INFO_WIDTH - heart_width)
 heart_y = random.randint(0, SCREEN_HEIGHT - heart_height)
 
 
@@ -47,9 +50,12 @@ font = pygame.font.SysFont(None, 36)
 
 
 def draw_score(hits, misses):
-    score_text = f"Hits: {hits}    Misses: {misses}"
+    score_text = f"Hits: {hits}"
     text = font.render(score_text, True, (0, 0, 0))
     screen.blit(text, (10, 10))
+    misses_text = f"Misses: {misses}"
+    text = font.render(misses_text, True, (0, 0, 0))
+    screen.blit(text, (10, 50))
 
 
 # Основной игровой цикл
@@ -57,6 +63,7 @@ running = True
 while running:
     # Заливка экрана кремовым цветом
     screen.fill(BACKGROUND_COLOR)
+    pygame.draw.rect(screen, (255, 255, 255), (0, 0, INFO_WIDTH, SCREEN_HEIGHT))  # Зона для информации
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -66,7 +73,7 @@ while running:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if heart_x < mouse_x < heart_x + heart_width and heart_y < mouse_y < heart_y + heart_height:
                 score_hits += 1
-                heart_x = random.randint(0, SCREEN_WIDTH - heart_width)
+                heart_x = random.randint(INFO_WIDTH, SCREEN_WIDTH + INFO_WIDTH - heart_width)
                 heart_y = random.randint(0, SCREEN_HEIGHT - heart_height)
             else:
                 score_misses += 1
@@ -74,7 +81,7 @@ while running:
     # Перемещение сердечка каждые 1.5 секунды
     current_time = time.time()
     if current_time - last_move_time > 1.5:
-        heart_x = random.randint(0, SCREEN_WIDTH - heart_width)
+        heart_x = random.randint(INFO_WIDTH, SCREEN_WIDTH + INFO_WIDTH - heart_width)
         heart_y = random.randint(0, SCREEN_HEIGHT - heart_height)
         last_move_time = current_time
 
